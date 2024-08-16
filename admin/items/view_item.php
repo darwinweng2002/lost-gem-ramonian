@@ -5,13 +5,25 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
         foreach($qry->fetch_assoc() as $k => $v){
             $$k=$v;
         }
+        
+        // Insert into claim_history if the status is set to "Claimed"
+        if($status == 2) {
+            $claimedBy = $fullname; // Assuming $fullname holds the name of the user who claimed it
+            $claimedAt = date("Y-m-d H:i:s");
+
+            $stmt = $conn->prepare("INSERT INTO claim_history (item_id, claimed_by, claimed_at) VALUES (?, ?, ?)");
+            $stmt->bind_param("iss", $id, $claimedBy, $claimedAt);
+            $stmt->execute();
+            $stmt->close();
+        }
     }else{
-        echo '<script>alert("item ID is not valid."); location.replace("./?page=items")</script>';
+        echo '<script>alert("Item ID is not valid."); location.replace("./?page=items")</script>';
     }
 }else{
-    echo '<script>alert("item ID is Required."); location.replace("./?page=items")</script>';
+    echo '<script>alert("Item ID is Required."); location.replace("./?page=items")</script>';
 }
 ?>
+
 <style>
     .lf-image{
         width:400px;

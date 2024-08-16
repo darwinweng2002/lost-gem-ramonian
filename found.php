@@ -1,15 +1,6 @@
 <?php  
-if (isset($_POST['new_category']) && !empty($_POST['new_category'])) {
-    $new_category = $_POST['new_category'];
-    // Insert new category into database if it does not exist
-    $stmt = $conn->prepare("INSERT INTO `category_list` (`name`, `status`) SELECT ?, 1 WHERE NOT EXISTS (SELECT 1 FROM `category_list` WHERE `name` = ?)");
-    $stmt->bind_param("ss", $new_category, $new_category);
-    $stmt->execute();
-    $category_id = $conn->insert_id; // Get the ID of the newly inserted category
-} else {
-    // Use a default value if 'category_id' is not set
-    $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : null;
-}
+// Retain original category selection logic without adding new categories
+$category_id = isset($_POST['category_id']) ? $_POST['category_id'] : null;
 
 // Proceed with saving the item including the $category_id
 ?>
@@ -43,9 +34,7 @@ if (isset($_POST['new_category']) && !empty($_POST['new_category'])) {
                                     ?>
                                     <option value="<?= $row['id'] ?>" <?= isset($category_id) && $category_id == $row['id'] ? "selected" : "" ?>><?= $row['name'] ?></option>
                                     <?php endwhile; ?>
-                                    <option value="add_new">Add New Category</option>
                                 </select>
-                                <input type="text" id="new_category" name="new_category" class="form-control" placeholder="Enter new category" style="display: none;">
                             </div>
                         </div>
                     </div>
@@ -115,30 +104,12 @@ if (isset($_POST['new_category']) && !empty($_POST['new_category'])) {
             width: '100%'
         });
 
-        $('#category_id').change(function() {
-            if ($(this).val() === 'add_new') {
-                $('#new_category').show();
-            } else {
-                $('#new_category').hide();
-            }
-        });
-
         $('#item-form').submit(function(e){
             e.preventDefault();
             var _this = $(this);
             $('.err-msg').remove();
             setTimeout(() => {
                 start_loader();
-
-                // Append new category if provided
-                var newCategory = $('#new_category').val();
-                if (newCategory) {
-                    $('<input>').attr({
-                        type: 'hidden',
-                        name: 'new_category',
-                        value: newCategory
-                    }).appendTo(_this);
-                }
 
                 $.ajax({
                     url: _base_url_ + "classes/Master.php?f=save_item",

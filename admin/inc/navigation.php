@@ -82,6 +82,12 @@
       <span>User Accounts</span>
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/activities/activity_log.php/">
+      <i class="bi bi-people"></i>
+      <span>Activity Logs</span>
+    </a>
+  </li>
   <?php endif; ?>
 
 </ul>
