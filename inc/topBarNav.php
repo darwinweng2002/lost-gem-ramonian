@@ -187,7 +187,7 @@
             </ul>
         </nav>
          <div class="dropdown">
-        <button class="dropdown-button">Actions</button>
+        <button class="dropdown-button">Menu</button>
         <div class="dropdown-content">
             <a href="http://localhost/lostgemramonian//admin">Login</a>
             <a href="http://localhost/lostgemramonian/user_members/dashboard.php">Profile</a>

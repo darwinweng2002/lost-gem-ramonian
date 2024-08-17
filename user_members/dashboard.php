@@ -90,16 +90,26 @@ $stmt->close();
                 </div>
               </div>
               <footer>
-                <div class="copyright">
-                  &copy; Copyright <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
-                </div>
-                <div class="credits">
-                  <p style="text-align: center;">Developed by BSINFOTECH 3-C <a href="http://localhost/lostgemramonian/">prmsuramonianlostgems.com</a></p>
-                  <a href="<?= base_url ?>">
-                    <center><img style="height: 55px; width: 55px;" src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo"></center>
-                  </a>
-                </div>
+                  <div class="container text-center py-4">
+                    <!-- Copyright Section -->
+                    <div class="copyright mb-2">
+                      &copy; <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
+                    </div>
+                    <!-- Credits Section -->
+                    <div class="credits">
+                      <p>
+                        <a href="http://localhost/lostgemramonian/register.php">prmsuramonianlostgems.com</a>
+                      </p>
+                    </div>
+                    <!-- Logo Section -->
+                    <div class="logo mb-2">
+                      <a href="<?= base_url ?>">
+                        <img style="height: 55px; width: 55px;" src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo">
+                      </a>
+                    </div>
+                  </div>
               </footer>
+
             </div>
           </div>
         </div>
