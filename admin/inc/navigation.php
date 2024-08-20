@@ -88,6 +88,12 @@
       <span>Activity Logs</span>
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/pendings/pending_accounts.php/">
+      <i class="bi bi-people"></i>
+      <span>Pending Accounts</span>
+    </a>
+  </li>
   <?php endif; ?>
 
 </ul>

@@ -53,21 +53,19 @@
     </div>
         <br>
         <div class="row">
-            <form action="" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="" class="control-label">Item Image</label>
                             <div class="custom-file">
-                            <input type="file" class="form-control" id="customFile" name="image_pathh" onchange="displayImg(this,$(this))" accept="image/png, image/jpeg">
-
+                                <input type="file" class="form-control" id="customFile" name="image" onchange="displayImg(this,$(this))" accept="image/png, image/jpeg">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group d-flex justify-content-center">
-                            
+                            <img src="<?php echo validate_image(isset($image_path) ? $image_path :'') ?>" alt="" id="cimg" class="img-fluid img-thumbnail">
                         </div>
-                    </div> 
-            </form> 
+                    </div>
+                </form>
                     <div class="mb-3">
                         <label for="message" class="form-label">Message</label>
                         <textarea rows="5" class="form-control" id="message" name="message" required="required"></textarea>
