@@ -1,6 +1,6 @@
 <?php
 if(isset($_GET['id']) && $_GET['id'] > 0){
-    $qry = $conn->query("SELECT *, COALESCE((SELECT `name` FROM `category_list` where `category_list`.`id` = `item_list`. `category_id` ) ,'N/A') as `category` from `item_list` where id = '{$_GET['id']}' ");
+    $qry = $conn->query("SELECT *, COALESCE((SELECT `name` FROM `category_list` where `category_list`.`id` = `item_list`.`category_id`), 'N/A') as `category` FROM `item_list` WHERE id = '{$_GET['id']}' ");
     if($qry->num_rows > 0){
         foreach($qry->fetch_assoc() as $k => $v){
             $$k=$v;
@@ -16,23 +16,23 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             $stmt->execute();
             $stmt->close();
         }
-    }else{
+    } else {
         echo '<script>alert("Item ID is not valid."); location.replace("./?page=items")</script>';
     }
-}else{
+} else {
     echo '<script>alert("Item ID is Required."); location.replace("./?page=items")</script>';
 }
 ?>
 
 <style>
-    .lf-image{
-        width:400px;
-        height:300px;
+    .lf-image {
+        width: 400px;
+        height: 300px;
         margin: 1em auto;
         background: #000;
         box-shadow: 1px 1px 10px #00000069;
     }
-    .lf-image > img{
+    .lf-image > img {
         width: 100%;
         height: 100%;
         object-fit: scale-down;
@@ -57,16 +57,20 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <dd class="ps-4"><?= $contact ?? "" ?></dd>
                         <dt class="text-muted">Description</dt>
                         <dd class="ps-4"><?= isset($description) ? str_replace("\n", "<br>", ($description)) : "" ?></dd>
-                      <dt class="text-muted">Status</dt>
-                       <?php if($status == 1): ?>
-                                <span class="badge bg-primary px-3 rounded-pill">Published</span>
-                            <?php elseif($status == 2): ?>
-                                <span class="badge bg-success px-3 rounded-pill">Claimed</span>
-                            <?php elseif($status == 3): ?>
-                                <span class="badge bg-secondary px-3 rounded-pill">Surrendered</span>
-                            <?php else: ?>
-                                <span class="badge bg-secondary px-3 rounded-pill">Pending</span>
-                            <?php endif; ?>
+                        <dt class="text-muted">Landmark</dt>
+                        <dd class="ps-4"><?= $landmark ?? "N/A" ?></dd>
+                        <dt class="text-muted">Time Found</dt>
+                        <dd class="ps-4"><?= isset($time_found) ? date('F j, Y, g:i a', strtotime($time_found)) : "N/A" ?></dd>
+                        <dt class="text-muted">Status</dt>
+                        <?php if($status == 1): ?>
+                            <span class="badge bg-primary px-3 rounded-pill">Published</span>
+                        <?php elseif($status == 2): ?>
+                            <span class="badge bg-success px-3 rounded-pill">Claimed</span>
+                        <?php elseif($status == 3): ?>
+                            <span class="badge bg-secondary px-3 rounded-pill">Surrendered</span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary px-3 rounded-pill">Pending</span>
+                        <?php endif; ?>
                     </dl>
                 </div>
             </div>
@@ -81,7 +85,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 <script>
     $(function(){
         $('#delete_data').click(function(){
-            _conf("Are you sure to delete this item permanently?","delete_item", ["<?= isset($id) ? $id :'' ?>"])
+            _conf("Are you sure to delete this item permanently?", "delete_item", ["<?= isset($id) ? $id : '' ?>"])
         })
     })
     function delete_item($id){
@@ -93,14 +97,14 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             dataType:"json",
             error:err=>{
                 console.log(err)
-                alert_toast("An error occured.",'error');
+                alert_toast("An error occurred.",'error');
                 end_loader();
             },
             success:function(resp){
-                if(typeof resp== 'object' && resp.status == 'success'){
+                if(typeof resp == 'object' && resp.status == 'success'){
                     location.replace("./?page=items");
-                }else{
-                    alert_toast("An error occured.",'error');
+                } else {
+                    alert_toast("An error occurred.",'error');
                     end_loader();
                 }
             }

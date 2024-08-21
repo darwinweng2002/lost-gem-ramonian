@@ -1,10 +1,18 @@
 <?php  
 // Retain original category selection logic without adding new categories
 $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : null;
+// Assuming you're processing the form data here
+$landmark = $_POST['landmark'] ?? '';
+$time_found = $_POST['time_found'] ?? '';
+
+// SQL query to insert or update the item
+$sql = "INSERT INTO `item_list` (email, category_id, fullname, title, contact, description, landmark, time_found, image_path) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sisssssss", $email, $category_id, $fullname, $title, $contact, $description, $landmark, $time_found, $image_path);
 
 // Proceed with saving the item including the $category_id
 ?>
-
 
 <h1 class="pageTitle text-center">Post Found Item</h1>
 <hr class="mx-auto bg-primary border-primary opacity-100" style="width:50px">
@@ -60,6 +68,18 @@ $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : null;
                         <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <label for="description" class="control-label">Description<i> (Kindly indicate where and when you found the missing item through description.)</i></label>
                             <textarea rows="5" name="description" id="description" class="form-control form-control-sm rounded-0" required><?php echo isset($description) ? $description : ''; ?></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <label for="landmark" class="control-label">Landmark</label>
+                            <input type="text" name="landmark" id="landmark" class="form-control form-control-sm rounded-0" value="<?php echo isset($landmark) ? $landmark : ''; ?>" required/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <label for="time_found" class="control-label">Time Found</label>
+                            <input type="datetime-local" name="time_found" id="time_found" class="form-control form-control-sm rounded-0" value="<?php echo isset($time_found) ? $time_found : ''; ?>" required/>
                         </div>
                     </div>
                     <div class="row">

@@ -6,12 +6,13 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $$k = $v;
         }
     } else {
-        echo '<script>alert("item ID is not valid."); location.replace("./?page=items")</script>';
+        echo '<script>alert("Item ID is not valid."); location.replace("./?page=items")</script>';
     }
 } else {
-    echo '<script>alert("item ID is Required."); location.replace("./?page=items")</script>';
+    echo '<script>alert("Item ID is Required."); location.replace("./?page=items")</script>';
 }
 ?>
+
 <style>
     .lf-image {
         width: 400px;
@@ -34,6 +35,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     .btn-light-green {
         background-color: #28a745; /* Light green color */
         border-color: #28a745;
+        border-radius: 0; /* Remove border radius */
     }
     .btn-light-green:hover {
         background-color: #218838; /* Darker green color for hover */
@@ -42,6 +44,7 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     .btn-primary {
         background-color: #0d6efd; /* Existing color */
         border-color: #0d6efd;
+        border-radius: 0; /* Remove border radius */
     }
     .btn-primary a {
         color: #fff;
@@ -72,6 +75,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                         <dd class="ps-4"><?= $contact ?? "" ?></dd>
                         <dt class="text-muted">Description</dt>
                         <dd class="ps-4"><?= isset($description) ? str_replace("\n", "<br>", ($description)) : "" ?></dd>
+                        <dt class="text-muted">Landmark</dt>
+                        <dd class="ps-4"><?= $landmark ?? "N/A" ?></dd>
+                        <dt class="text-muted">Time Found</dt>
+                        <dd class="ps-4"><?= isset($time_found) ? date('F j, Y, g:i a', strtotime($time_found)) : "N/A" ?></dd>
                         <dt class="text-muted">Status</dt>
                         <dd class="ps-4">
                             <?php if ($status == 1): ?>

@@ -4,8 +4,8 @@
 </script>
 <?php endif;?>
 <style>
-	#list td:nth-child(5),
-	#list td:nth-child(6){
+	#list td:nth-child(6),
+	#list td:nth-child(7){
 		text-align:center !important;
 	}
 </style>
@@ -24,7 +24,8 @@
 						<col width="20%">
 						<col width="15%">
 						<col width="35%">
-						<col width="15">
+						<col width="15%">
+						<col width="15%">
 						<col width="10%">
 					</colgroup>
 					<thead>
@@ -34,6 +35,8 @@
 							<th>Email</th>
 							<th>Founder Name</th>
 							<th>Title</th>
+							<th>Landmark</th>
+							<th>Time Found</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>
@@ -50,13 +53,15 @@
 								<td class="align-items-center"><?= $row['email'] ?></td>
 								<td class="align-items-center"><?= $row['fullname'] ?></td>
 								<td class="align-items-center"><p class="text-center truncate-1" style="max-width:250px"><?= $row['title'] ?></p></td>
+								<td class="align-items-center"><?= $row['landmark'] ?></td>
+								<td class="align-items-center"><?= date("Y-m-d H:i", strtotime($row['time_found'])) ?></td>
 								<td class="align-items-center justify-content-center text-center">
 									<?php if($row['status'] == 1): ?>
 										<span class="badge bg-primary px-3 rounded-pill">Published</span>
 									<?php elseif($row['status'] == 2): ?>
 										<span class="badge bg-success px-3 rounded-pill">Claimed</span>
 									<?php elseif($row['status'] == 3): ?>
-                                <span class="badge bg-secondary px-3 rounded-pill">Surrendered</span>
+                                        <span class="badge bg-secondary px-3 rounded-pill">Surrendered</span>
 									<?php else: ?>
 										<span class="badge bg-secondary px-3 rounded-pill">Pending</span>
 									<?php endif; ?>
