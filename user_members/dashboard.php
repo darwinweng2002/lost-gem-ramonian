@@ -2,9 +2,6 @@
 // Include the database configuration file
 include '../config.php';
 
-// Debugging output
-
-
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['user_id'])) {
     echo "Session not set, redirecting to login.<br>";
@@ -14,12 +11,34 @@ if (!isset($_SESSION['user_id'])) {
 
 // Fetch the user's information from the database
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT first_name, last_name, course_year_section, email, college FROM user_member WHERE id = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, course, year, section, email, college FROM user_member WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($first_name, $last_name, $course_year_section, $email, $college);
+$stmt->bind_result($first_name, $last_name, $course, $year, $section, $email, $college);
 $stmt->fetch();
 $stmt->close();
+
+// Fetch the user's claim history
+$claim_stmt = $conn->prepare("SELECT item_name, claim_date FROM claims WHERE user_id = ?");
+$claim_stmt->bind_param("i", $user_id);
+$claim_stmt->execute();
+$claim_stmt->bind_result($item_name, $claim_date);
+$claims = [];
+while ($claim_stmt->fetch()) {
+    $claims[] = ['item_name' => $item_name, 'claim_date' => $claim_date];
+}
+$claim_stmt->close();
+
+// Fetch the user's posted items history
+$post_stmt = $conn->prepare("SELECT item_name, post_date FROM posts WHERE user_id = ?");
+$post_stmt->bind_param("i", $user_id);
+$post_stmt->execute();
+$post_stmt->bind_result($item_name, $post_date);
+$posts = [];
+while ($post_stmt->fetch()) {
+    $posts[] = ['item_name' => $item_name, 'post_date' => $post_date];
+}
+$post_stmt->close();
 
 ?>
 
@@ -42,6 +61,35 @@ $stmt->close();
       color: #fff;
       text-shadow: 0px 0px 10px #000;
     }
+    .claim-history-table,
+    .post-history-table {
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    }
+    .claim-history-table thead,
+    .post-history-table thead {
+      background-color: #0D6EFD;
+      color: #fff;
+    }
+    .claim-history-table th,
+    .post-history-table th,
+    .claim-history-table td,
+    .post-history-table td {
+      padding: 12px;
+      text-align: left;
+    }
+    .claim-history-table tbody tr:nth-child(even),
+    .post-history-table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .history-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
   </style>
   <main>
     <div class="container">
@@ -54,7 +102,7 @@ $stmt->close();
                   <img src="<?= validate_image($_settings->info('logo')) ?>" alt="">
                   <span class="d-none d-lg-block text-center"><?= $_settings->info('name') ?></span>
                 </a>
-              </div><!-- End Logo -->
+              </div>
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="pt-4 pb-2">
@@ -67,13 +115,21 @@ $stmt->close();
                       <label class="form-label">Full Name</label>
                       <p class="form-control"><?= htmlspecialchars($first_name . ' ' . $last_name) ?></p>
                     </div>
-                     <div class="col-12">
+                    <div class="col-12">
                       <label class="form-label">College</label>
                       <p class="form-control"><?= htmlspecialchars($college) ?></p>
                     </div>
                     <div class="col-12">
-                      <label class="form-label">Course, Year, and Section</label>
-                      <p class="form-control"><?= htmlspecialchars($course_year_section) ?></p>
+                      <label class="form-label">Course</label>
+                      <p class="form-control"><?= htmlspecialchars($course) ?></p>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Year</label>
+                      <p class="form-control"><?= htmlspecialchars($year) ?></p>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Section</label>
+                      <p class="form-control"><?= htmlspecialchars($section) ?></p>
                     </div>
                     <div class="col-12">
                       <label class="form-label">Email</label>
@@ -81,27 +137,71 @@ $stmt->close();
                     </div>
                   </div>
 
-                  <div class="text-center mt-4">
-                    <a href="http://localhost/lostgemramonian/login.php" class="btn btn-primary">Logout</a>
+                  <div class="history-title">Your Claim History</div>
+                  <table class="table claim-history-table">
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>Claim Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php if (empty($claims)): ?>
+                        <tr>
+                          <td colspan="2" class="text-center">No claim history available.</td>
+                        </tr>
+                      <?php else: ?>
+                        <?php foreach ($claims as $claim): ?>
+                          <tr>
+                            <td><?= htmlspecialchars($claim['item_name']) ?></td>
+                            <td><?= htmlspecialchars($claim['claim_date']) ?></td>
+                          </tr>
+                        <?php endforeach; ?>
+                      <?php endif; ?>
+                    </tbody>
+                  </table>
+
+                  <div class="history-title">Your Posted Items</div>
+                  <table class="table post-history-table">
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>Post Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php if (empty($posts)): ?>
+                        <tr>
+                          <td colspan="2" class="text-center">No posted items available.</td>
+                        </tr>
+                      <?php else: ?>
+                        <?php foreach ($posts as $post): ?>
+                          <tr>
+                            <td><?= htmlspecialchars($post['item_name']) ?></td>
+                            <td><?= htmlspecialchars($post['post_date']) ?></td>
+                          </tr>
+                        <?php endforeach; ?>
+                      <?php endif; ?>
+                    </tbody>
+                  </table>
+
+                  <div class="text-center mt-4 d-flex justify-content-center">
+                    <a href="http://localhost/lostgemramonian/logout.php" class="btn btn-primary mx-2">Logout</a>
+                    <a href="http://localhost/lostgemramonian/" class="btn btn-secondary mx-2">Back</a>
                   </div>
-                   <div class="text-center mt-4">
-                    <a href="http://localhost/lostgemramonian/" class="btn btn-primary">Back</a>
-                  </div>
+
                 </div>
               </div>
               <footer>
                   <div class="container text-center py-4">
-                    <!-- Copyright Section -->
                     <div class="copyright mb-2">
                       &copy; <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
                     </div>
-                    <!-- Credits Section -->
                     <div class="credits">
                       <p>
                         <a href="http://localhost/lostgemramonian/register.php">prmsuramonianlostgems.com</a>
                       </p>
                     </div>
-                    <!-- Logo Section -->
                     <div class="logo mb-2">
                       <a href="<?= base_url ?>">
                         <img style="height: 55px; width: 55px;" src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo">

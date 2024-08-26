@@ -1,7 +1,5 @@
-<?php require_once('./config.php');
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+<?php 
+require_once('./config.php');
 
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['user_id'])) {
@@ -11,17 +9,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Include the database configuration file
 
-
 // Fetch the user's information from the database
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT first_name, last_name, course_year_section, email FROM user_member WHERE id = ?");
+$stmt = $conn->prepare("SELECT first_name, last_name, course, year, section, email FROM user_member WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$stmt->bind_result($first_name, $last_name, $course_year_section, $email);
+$stmt->bind_result($first_name, $last_name, $course, $year, $section, $email); // Fix bind_result to match SQL columns
 $stmt->fetch();
 $stmt->close();
 ?>
- ?>
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('inc/header.php') ?>

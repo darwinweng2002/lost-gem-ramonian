@@ -14,7 +14,7 @@ $searchTerm = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']
 
 // Update SQL query to include search functionality
 $sql = "SELECT * FROM user_member WHERE 
-        CONCAT_WS(' ', first_name, last_name, course_year_section, email) LIKE '%$searchTerm%'";
+        CONCAT_WS(' ', first_name, last_name, course, year, section, email) LIKE '%$searchTerm%'";
 
 $result = $conn->query($sql);
 ?>
@@ -129,7 +129,10 @@ $result = $conn->query($sql);
                     <th>ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Course, Year, Section</th>
+                    <th>College</th>
+                    <th>Course</th>
+                    <th>Year</th>
+                    <th>Section</th>
                     <th>Verified</th>
                     <th>Email</th>
                     <th>Actions</th>
@@ -142,16 +145,23 @@ $result = $conn->query($sql);
                         <td><?= $row['id'] ?></td>
                         <td><?= $row['first_name'] ?></td>
                         <td><?= $row['last_name'] ?></td>
-                        <td><?= $row['course_year_section'] ?></td>
+                        <td><?= $row['college'] ?></td>
+                        <td><?= $row['course'] ?></td>
+                        <td><?= $row['year'] ?></td>
+                        <td><?= $row['section'] ?></td>
                         <td><?= $row['verified'] ? 'Yes' : 'No' ?></td>
                         <td><?= $row['email'] ?></td>
                         <td>
-                            <a href="edit_user.php?id=<?= $row['id'] ?>" class="btn btn-edit btn-sm"><i class="fa fa-edit"></i> Edit</a>
-                            <button class="btn btn-delete btn-sm" onclick="deleteUser(<?= $row['id'] ?>)">
-                                <i class="fa fa-trash"></i> Delete
-                                <span class="spinner-border spinner-border-sm"></span>
-                            </button>
-                        </td>
+    <div class="d-flex justify-content-center">
+        <a href="edit_user.php?id=<?= $row['id'] ?>" class="btn btn-edit btn-sm me-2">
+            <i class="fa fa-edit"></i> Edit
+        </a>
+        <button class="btn btn-delete btn-sm" onclick="deleteUser(<?= $row['id'] ?>)">
+            <i class="fa fa-trash"></i> Delete
+            <span class="spinner-border spinner-border-sm"></span>
+        </button>
+    </div>
+</td>
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>

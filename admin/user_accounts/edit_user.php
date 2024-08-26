@@ -29,14 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = intval($_POST['id']);
     $first_name = $conn->real_escape_string($_POST['first_name']);
     $last_name = $conn->real_escape_string($_POST['last_name']);
-    $course_year_section = $conn->real_escape_string($_POST['course_year_section']);
+    $college = $conn->real_escape_string($_POST['college']);
+    $course = $conn->real_escape_string($_POST['course']);
+    $year = $conn->real_escape_string($_POST['year']);
+    $section = $conn->real_escape_string($_POST['section']);
     $verified = intval($_POST['verified']);
     $email = $conn->real_escape_string($_POST['email']);
 
     $sql = "UPDATE user_member SET 
             first_name = '$first_name', 
             last_name = '$last_name', 
-            course_year_section = '$course_year_section', 
+            college = '$college', 
+            course = '$course',
+            year = '$year',
+            section = '$section', 
             verified = $verified, 
             email = '$email' 
             WHERE id = $id";
@@ -113,9 +119,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name']) ?>" required>
             </div>
             <div class="mb-3">
-                <label for="course_year_section" class="form-label">Course, Year, Section</label>
-                <input type="text" class="form-control" id="course_year_section" name="course_year_section" value="<?= htmlspecialchars($user['course_year_section']) ?>" required>
+                <label for="college" class="form-label">College</label>
+                <input type="text" class="form-control" id="college" name="college" value="<?= htmlspecialchars($user['college']) ?>" required>
             </div>
+
+            <!-- Group Course, Year, and Section fields side by side -->
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="course" class="form-label">Course</label>
+                    <input type="text" class="form-control" id="course" name="course" value="<?= htmlspecialchars($user['course']) ?>" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="year" class="form-label">Year</label>
+                    <input type="text" class="form-control" id="year" name="year" value="<?= htmlspecialchars($user['year']) ?>" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="section" class="form-label">Section</label>
+                    <input type="text" class="form-control" id="section" name="section" value="<?= htmlspecialchars($user['section']) ?>" required>
+                </div>
+            </div>
+
             <div class="mb-3">
                 <label for="verified" class="form-label">Verified</label>
                 <select class="form-select" id="verified" name="verified" required>
@@ -133,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>User not found or an error occurred.</p>
     <?php endif; ?>
 </div>
+
 
 <div class="loading" id="loading">
     <div class="spinner-border text-primary" role="status">
