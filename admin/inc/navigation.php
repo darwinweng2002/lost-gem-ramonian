@@ -89,7 +89,7 @@
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/pendings/pending_accounts.php/">
+    <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/claims/claims_list.php">
       <i class="bi bi-people"></i>
       <span>Pending Accounts</span>
     </a>

@@ -1,4 +1,5 @@
 <?php
+include '../../config.php';
 // Database connection
 $conn = new mysqli('localhost', 'root', '1234', 'lfis_db'); // Replace with your actual DB connection details
 
@@ -28,6 +29,7 @@ if (isset($_POST['delete_id'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+<?php require_once('../inc/header.php') ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,6 +95,8 @@ if (isset($_POST['delete_id'])) {
     </style>
 </head>
 <body>
+<?php require_once('../inc/topBarNav.php') ?>
+<?php require_once('../inc/navigation.php') ?> 
     <div class="container">
         <h2 class="text-center mb-4">Claim Activity Log</h2>
         <div class="table-responsive">
@@ -169,6 +173,7 @@ if (isset($_POST['delete_id'])) {
             }
         }
     </script>
+ <?php require_once('../inc/footer.php') ?>
 </body>
 </html>
 

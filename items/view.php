@@ -1,15 +1,29 @@
 <?php
+// Use include_once to avoid redeclaring functions
+include_once 'config.php';
+
+// Fetch item details
 if (isset($_GET['id']) && $_GET['id'] > 0) {
-    $qry = $conn->query("SELECT *, COALESCE((SELECT `name` FROM `category_list` WHERE `category_list`.`id` = `item_list`.`category_id`), 'N/A') AS `category` FROM `item_list` WHERE id = '{$_GET['id']}'");
+    $item_id = $_GET['id'];
+    
+    $qry = $conn->query("
+        SELECT *, 
+            COALESCE((SELECT `name` FROM `category_list` WHERE `category_list`.`id` = `item_list`.`category_id`), 'N/A') AS `category` 
+        FROM `item_list` 
+        WHERE id = '{$item_id}'
+    ");
+    
     if ($qry->num_rows > 0) {
         foreach ($qry->fetch_assoc() as $k => $v) {
             $$k = $v;
         }
     } else {
         echo '<script>alert("Item ID is not valid."); location.replace("./?page=items")</script>';
+        exit;
     }
 } else {
     echo '<script>alert("Item ID is Required."); location.replace("./?page=items")</script>';
+    exit;
 }
 ?>
 
@@ -65,18 +79,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             <div class="card-body">
                 <div class="container-fluid mt-4">
                     <div class="lf-image">
-                        <img src="<?= validate_image($image_path ?? "") ?>" alt="<?= $title ?? "" ?>">
+                        <img src="<?= validate_image($image_path ?? "") ?>" alt="<?= htmlspecialchars($title ?? "") ?>">
                     </div>
-                    <h2 class="titleTxt"><?= $title ?? "" ?> <span>| <?= $category ?? "" ?></span></h2>
+                    <h2 class="titleTxt"><?= htmlspecialchars($title ?? "") ?> <span>| <?= htmlspecialchars($category ?? "") ?></span></h2>
                     <dl>
                         <dt class="text-muted">Founder Name</dt>
-                        <dd class="ps-4"><?= $fullname ?? "" ?></dd>
+                        <dd class="ps-4"><?= htmlspecialchars($fullname ?? "") ?></dd>
                         <dt class="text-muted">Contact No.</dt>
-                        <dd class="ps-4"><?= $contact ?? "" ?></dd>
+                        <dd class="ps-4"><?= htmlspecialchars($contact ?? "") ?></dd>
                         <dt class="text-muted">Description</dt>
-                        <dd class="ps-4"><?= isset($description) ? str_replace("\n", "<br>", ($description)) : "" ?></dd>
+                        <dd class="ps-4"><?= isset($description) ? str_replace("\n", "<br>", htmlspecialchars($description)) : "" ?></dd>
                         <dt class="text-muted">Landmark</dt>
-                        <dd class="ps-4"><?= $landmark ?? "N/A" ?></dd>
+                        <dd class="ps-4"><?= htmlspecialchars($landmark ?? "N/A") ?></dd>
                         <dt class="text-muted">Time Found</dt>
                         <dd class="ps-4"><?= isset($time_found) ? date('F j, Y, g:i a', strtotime($time_found)) : "N/A" ?></dd>
                         <dt class="text-muted">Status</dt>
@@ -94,10 +108,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                     </dl>
                     <div class="center-buttons">
                         <div class="btn btn-light-green">
-                            <a href="http://localhost/lostgemramonian/?page=contact">Request to Claim</a>
+                            <a href="http://localhost/lostgemramonian/user_members/claim_request.php?item_id=<?= htmlspecialchars($item_id) ?>">Request to Claim</a>
                         </div>
                         <div class="btn btn-primary">
-                            <a href="http://localhost/lostgemramonian/?page=items">Back</a>
+                            <a href="./?page=items">Back</a>
                         </div>
                     </div>
                 </div>

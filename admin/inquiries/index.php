@@ -28,6 +28,7 @@
 								<td class="align-items-center text-center"><?php echo $i++; ?></td>
 								<td class="align-items-center"><?php echo date("Y-m-d g:i A",strtotime($row['created_at'])) ?></td>
 								<td class="align-items-center"><?= $row['fullname'] ?></td>
+								<td class="align-items-center"><?= $row['image_path'] ?></td>
 								<td class="align-items-center text-center">
 									<?php if($row['status'] == 1): ?>
 										<span class="badge bg-success px-3 rounded-pill">Read</span>

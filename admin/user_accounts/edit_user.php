@@ -1,6 +1,6 @@
 <?php
 // edit_user.php
-
+include '../../config.php';
 // Database connection
 $conn = new mysqli("localhost", "root", "1234", "lfis_db");
 
@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+<?php require_once('../inc/header.php') ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,13 +101,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .loading.show {
             display: block;
         }
+        .pagetitle {
+  margin-bottom: 10px;
+}
+
+.pagetitle h1 {
+  font-size: 24px;
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #012970;
+}
     </style>
 </head>
 <body>
-
+<br>
+<br>
+<?php require_once('../inc/topBarNav.php') ?>
+<?php require_once('../inc/navigation.php') ?> 
 <div class="container">
-    <h2 class="text-center mb-4">Edit User</h2>
-
+    <h1 class="pagetitle">Edit User</h1>
     <?php if ($user): ?>
         <form id="editForm" method="POST" action="edit_user.php">
             <input type="hidden" name="id" value="<?= $user['id'] ?>">
@@ -170,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.getElementById('loading').classList.add('show');
     });
 </script>
+<?php require_once('../inc/footer.php') ?>
 </body>
 </html>
 

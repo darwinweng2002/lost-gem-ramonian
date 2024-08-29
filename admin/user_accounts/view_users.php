@@ -1,6 +1,5 @@
 <?php
-// view_users.php
-
+include '../../config.php';
 // Database connection
 $conn = new mysqli("localhost", "root", "1234", "lfis_db");
 
@@ -21,11 +20,13 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+<?php require_once('../inc/header.php') ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Users</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Added Font Awesome -->
     <style>
         body {
             background-color: #f1f2f1;
@@ -109,9 +110,27 @@ $result = $conn->query($sql);
         .search-button:hover {
             background-color: #218838; /* Darker green on hover */
         }
+
+        /* CSS for message box button */
+        .message-box-btn {
+            padding: 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .message-box-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+<?php require_once('../inc/topBarNav.php') ?>
+<?php require_once('../inc/navigation.php') ?> 
 <section class="section">
 <div class="container">
     <h2 class="text-center mb-4">Registered Users</h2>
@@ -142,31 +161,31 @@ $result = $conn->query($sql);
             <?php if ($result->num_rows > 0): ?>
                 <?php while($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $row['id'] ?></td>
-                        <td><?= $row['first_name'] ?></td>
-                        <td><?= $row['last_name'] ?></td>
-                        <td><?= $row['college'] ?></td>
-                        <td><?= $row['course'] ?></td>
-                        <td><?= $row['year'] ?></td>
-                        <td><?= $row['section'] ?></td>
+                        <td><?= htmlspecialchars($row['id']) ?></td>
+                        <td><?= htmlspecialchars($row['first_name']) ?></td>
+                        <td><?= htmlspecialchars($row['last_name']) ?></td>
+                        <td><?= htmlspecialchars($row['college']) ?></td>
+                        <td><?= htmlspecialchars($row['course']) ?></td>
+                        <td><?= htmlspecialchars($row['year']) ?></td>
+                        <td><?= htmlspecialchars($row['section']) ?></td>
                         <td><?= $row['verified'] ? 'Yes' : 'No' ?></td>
-                        <td><?= $row['email'] ?></td>
+                        <td><?= htmlspecialchars($row['email']) ?></td>
                         <td>
-    <div class="d-flex justify-content-center">
-        <a href="edit_user.php?id=<?= $row['id'] ?>" class="btn btn-edit btn-sm me-2">
-            <i class="fa fa-edit"></i> Edit
-        </a>
-        <button class="btn btn-delete btn-sm" onclick="deleteUser(<?= $row['id'] ?>)">
-            <i class="fa fa-trash"></i> Delete
-            <span class="spinner-border spinner-border-sm"></span>
-        </button>
-    </div>
-</td>
+                            <div class="d-flex justify-content-center">
+                                <a href="edit_user.php?id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-edit btn-sm me-2">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+                                <button class="btn btn-delete btn-sm" onclick="deleteUser(event, <?= htmlspecialchars($row['id']) ?>)">
+                                    <i class="fa fa-trash"></i> Delete
+                                    <span class="spinner-border spinner-border-sm"></span>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="7" class="text-center">No registered users found.</td>
+                    <td colspan="10" class="text-center">No registered users found.</td>
                 </tr>
             <?php endif; ?>
             </tbody>
@@ -176,42 +195,45 @@ $result = $conn->query($sql);
 </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
-    function deleteUser(id) {
+    function deleteUser(event, id) {
+        event.preventDefault(); // Prevent default form submission
         if (confirm("Are you sure you want to delete this user?")) {
             const button = event.currentTarget;
             const spinner = button.querySelector('.spinner-border');
             button.disabled = true; // Disable button to prevent multiple clicks
             spinner.style.display = 'inline-block'; // Show loading spinner
 
-            fetch('delete_user.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'id=' + id
-            })
-            .then(response => response.text())
-            .then(result => {
-                spinner.style.display = 'none'; // Hide loading spinner
-                button.disabled = false; // Re-enable button
-                if (result.trim() === '1') {
-                    location.reload();
-                } else {
+            // Simulate loading animation for 2 seconds
+            setTimeout(() => {
+                fetch('delete_user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'id=' + id
+                })
+                .then(response => response.text())
+                .then(result => {
+                    spinner.style.display = 'none'; // Hide loading spinner
+                    button.disabled = false; // Re-enable button
+                    if (result.trim() === '1') {
+                        location.reload();
+                    } else {
+                        alert('An error occurred while deleting the user.');
+                    }
+                })
+                .catch(() => {
+                    spinner.style.display = 'none'; // Hide loading spinner on error
+                    button.disabled = false; // Re-enable button
                     alert('An error occurred while deleting the user.');
-                }
-            })
-            .catch(() => {
-                spinner.style.display = 'none'; // Hide loading spinner on error
-                button.disabled = false; // Re-enable button
-                alert('An error occurred while deleting the user.');
-            });
+                });
+            }, 2000); // 2 seconds delay for loading animation
         }
     }
 </script>
-
-</body>
-</html>
-
 <?php
 $conn->close();
 ?>
+<?php require_once('../inc/footer.php') ?>
+</body>
+</html>
