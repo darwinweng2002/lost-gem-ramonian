@@ -1,5 +1,6 @@
 <?php
 include '../../config.php';
+
 // Database connection
 $conn = new mysqli("localhost", "root", "1234", "lfis_db");
 
@@ -25,11 +26,9 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Users</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Added Font Awesome -->
     <style>
         body {
-            background-color: #f1f2f1;
+            background-color: #f4f4f4;
             color: #333;
             font-family: Arial, sans-serif;
         }
@@ -38,47 +37,68 @@ $result = $conn->query($sql);
             margin-top: 30px;
         }
 
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
         .table-responsive {
             background: #fff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            overflow: hidden;
         }
 
-        .table thead {
-            background-color: #0e0b71;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        thead th {
+            background-color: #2C3E50;
             color: white;
         }
 
-        .table th, .table td {
-            text-align: center;
-            vertical-align: middle;
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
         }
 
         .btn {
-            border-radius: 0; /* No border radius */
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: #fff;
         }
 
         .btn-edit {
             background-color: #007bff;
-            color: #fff;
-            border: none; /* No border */
+            border: none;
         }
 
         .btn-edit:hover {
             background-color: #0056b3;
-            color: #fff;
         }
 
         .btn-delete {
             background-color: #dc3545;
-            color: #fff;
-            border: none; /* No border */
+            border: none;
             position: relative;
         }
 
         .btn-delete:hover {
             background-color: #c82333;
-            color: #fff;
         }
 
         .btn-delete .spinner-border {
@@ -91,109 +111,110 @@ $result = $conn->query($sql);
 
         .search-form {
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
         }
 
         .search-input {
-            border-radius: 0;
+            border-radius: 4px;
             box-shadow: none;
             border: 1px solid #ddd;
-            width: 200px; /* Adjust width to make it smaller */
+            width: 200px;
+            margin-right: 10px;
+            padding: 8px;
         }
 
         .search-button {
-            border-radius: 0;
-            background-color: #28a745; /* Green background */
-            color: #fff; /* White text */
+            border-radius: 4px;
+            background-color: #28a745;
+            color: #fff;
             border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         .search-button:hover {
-            background-color: #218838; /* Darker green on hover */
+            background-color: #218838;
         }
 
-        /* CSS for message box button */
-        .message-box-btn {
-            padding: 20px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
+        .no-data {
             text-align: center;
-            display: inline-block;
-            text-decoration: none;
+            font-size: 1.2rem;
+            color: #333;
+            padding: 30px 0;
         }
 
-        .message-box-btn:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
 <?php require_once('../inc/topBarNav.php') ?>
 <?php require_once('../inc/navigation.php') ?> 
+<br>
+<br>
 <section class="section">
-<div class="container">
-    <h2 class="text-center mb-4">Registered Users</h2>
+    <div class="container">
+        <h2>Registered Users</h2>
 
-    <!-- Search Form -->
-    <form class="search-form d-flex" method="GET" action="view_users.php">
-        <input type="text" name="search" class="form-control search-input" placeholder="Search users..." value="<?= htmlspecialchars($searchTerm) ?>">
-        <button type="submit" class="btn search-button ms-2">Search</button>
-    </form>
+        <!-- Search Form -->
+        <form class="search-form" method="GET" action="view_users.php">
+            <input type="text" name="search" class="search-input" placeholder="Search users..." value="<?= htmlspecialchars($searchTerm) ?>">
+            <button type="submit" class="search-button">Search</button>
+        </form>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>College</th>
-                    <th>Course</th>
-                    <th>Year</th>
-                    <th>Section</th>
-                    <th>Verified</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php if ($result->num_rows > 0): ?>
-                <?php while($row = $result->fetch_assoc()): ?>
+        <div class="table-responsive">
+            <table>
+                <thead>
                     <tr>
-                        <td><?= htmlspecialchars($row['id']) ?></td>
-                        <td><?= htmlspecialchars($row['first_name']) ?></td>
-                        <td><?= htmlspecialchars($row['last_name']) ?></td>
-                        <td><?= htmlspecialchars($row['college']) ?></td>
-                        <td><?= htmlspecialchars($row['course']) ?></td>
-                        <td><?= htmlspecialchars($row['year']) ?></td>
-                        <td><?= htmlspecialchars($row['section']) ?></td>
-                        <td><?= $row['verified'] ? 'Yes' : 'No' ?></td>
-                        <td><?= htmlspecialchars($row['email']) ?></td>
-                        <td>
-                            <div class="d-flex justify-content-center">
-                                <a href="edit_user.php?id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-edit btn-sm me-2">
-                                    <i class="fa fa-edit"></i> Edit
-                                </a>
-                                <button class="btn btn-delete btn-sm" onclick="deleteUser(event, <?= htmlspecialchars($row['id']) ?>)">
-                                    <i class="fa fa-trash"></i> Delete
-                                    <span class="spinner-border spinner-border-sm"></span>
-                                </button>
-                            </div>
-                        </td>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>College</th>
+                        <th>Course</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Verified</th>
+                        <th>Email</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10" class="text-center">No registered users found.</td>
-                </tr>
-            <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <?php if ($result->num_rows > 0): ?>
+                    <?php while($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['id']) ?></td>
+                            <td><?= htmlspecialchars($row['first_name']) ?></td>
+                            <td><?= htmlspecialchars($row['last_name']) ?></td>
+                            <td><?= htmlspecialchars($row['college']) ?></td>
+                            <td><?= htmlspecialchars($row['course']) ?></td>
+                            <td><?= htmlspecialchars($row['year']) ?></td>
+                            <td><?= htmlspecialchars($row['section']) ?></td>
+                            <td><?= $row['verified'] ? 'Yes' : 'No' ?></td>
+                            <td><?= htmlspecialchars($row['email']) ?></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a href="edit_user.php?id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-edit btn-sm me-2">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <button class="btn btn-delete btn-sm" onclick="deleteUser(event, <?= htmlspecialchars($row['id']) ?>)">
+                                        <i class="fa fa-trash"></i> Delete
+                                        <span class="spinner-border spinner-border-sm"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="10" class="no-data">No registered users found.</td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 </section>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 <script>
     function deleteUser(event, id) {
         event.preventDefault(); // Prevent default form submission
@@ -231,6 +252,7 @@ $result = $conn->query($sql);
         }
     }
 </script>
+
 <?php
 $conn->close();
 ?>

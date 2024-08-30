@@ -35,11 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "No user found with that email.";
         }
-        $stmt->close();
     } else {
         echo "Error preparing statement: " . $conn->error;
     }
-    $conn->close();
+ 
 }
 ?>
 

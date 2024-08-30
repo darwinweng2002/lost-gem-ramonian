@@ -33,6 +33,21 @@ $stmt->close();
           object-fit: cover;
           object-position: center center;
       }
+      /* Remove underline from header title */
+#site-header .siteTitle {
+    text-decoration: none;
+}
+
+/* Remove underline from all navigation links */
+.navbar-nav a {
+    text-decoration: none;
+}
+
+/* Optional: Remove underline from menu links */
+.menu-links a {
+    text-decoration: none;
+}
+
     </style>
      <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home';  ?>
      <?php 

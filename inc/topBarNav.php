@@ -110,6 +110,8 @@
             background-color: #0056b3;
         }
 
+
+        
         /*-----*/
         /* Dropdown Container */
 /* Dropdown Container */
@@ -245,6 +247,9 @@
     background-color: #2980b9; /* Darker shade on hover */
 }
 
+.header-nav .nav-link {
+    text-decoration: none;
+}
 /* Responsive adjustments for sidebar */
 @media (max-width: 800px) {
     #side-nav-bar {
@@ -259,6 +264,8 @@
 #sidebar-toggle-button.hidden {
     display: none;
 }
+
+
 
 </style>
 

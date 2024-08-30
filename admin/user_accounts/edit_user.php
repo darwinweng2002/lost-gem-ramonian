@@ -66,58 +66,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
-            color: #333;
-            font-family: Arial, sans-serif;
+            background-color: #f1f3f8;
+            color: #2d3436;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .container {
-            margin-top: 30px;
+            margin-top: 40px;
             max-width: 600px;
+            background-color: #ffffff;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         .form-label {
-            font-weight: bold;
+            font-weight: 600;
+            color: #636e72;
+        }
+
+        .form-control {
+            background-color: #f7f9fc;
+            border-color: #dfe4ea;
+            color: #2d3436;
+        }
+
+        .form-control:focus {
+            border-color: #74b9ff;
+            box-shadow: none;
         }
 
         .btn-primary {
-            background-color: #0e0b71;
+            background-color: #0984e3;
             border: none;
+            font-weight: 600;
         }
 
         .btn-primary:hover {
-            background-color: #0c0a5c;
+            background-color: #74b9ff;
         }
 
-        .loading {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-        }
-
-        .loading.show {
-            display: block;
-        }
         .pagetitle {
-  margin-bottom: 10px;
-}
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0984e3;
+            text-align: center;
+        }
 
-.pagetitle h1 {
-  font-size: 24px;
-  margin-bottom: 0;
-  font-weight: 600;
-  color: #012970;
-}
+        .row .col-md-4 {
+            margin-bottom: 20px;
+        }
+
+        .custom-select {
+            background-color: #f7f9fc;
+            border-color: #dfe4ea;
+            color: #2d3436;
+        }
+
+        .custom-select:focus {
+            border-color: #74b9ff;
+            box-shadow: none;
+        }
+
+        /* Remove underline from links and headers */
+        a, h1, h2, h3, h4, h5, h6 {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-<br>
-<br>
 <?php require_once('../inc/topBarNav.php') ?>
-<?php require_once('../inc/navigation.php') ?> 
+<?php require_once('../inc/navigation.php') ?>
+<br>
+<br>
 <div class="container">
     <h1 class="pagetitle">Edit User</h1>
     <?php if ($user): ?>
@@ -138,15 +160,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <!-- Group Course, Year, and Section fields side by side -->
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4">
                     <label for="course" class="form-label">Course</label>
                     <input type="text" class="form-control" id="course" name="course" value="<?= htmlspecialchars($user['course']) ?>" required>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4">
                     <label for="year" class="form-label">Year</label>
                     <input type="text" class="form-control" id="year" name="year" value="<?= htmlspecialchars($user['year']) ?>" required>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4">
                     <label for="section" class="form-label">Section</label>
                     <input type="text" class="form-control" id="section" name="section" value="<?= htmlspecialchars($user['section']) ?>" required>
                 </div>
@@ -154,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="mb-3">
                 <label for="verified" class="form-label">Verified</label>
-                <select class="form-select" id="verified" name="verified" required>
+                <select class="form-select custom-select" id="verified" name="verified" required>
                     <option value="1" <?= $user['verified'] ? 'selected' : '' ?>>Yes</option>
                     <option value="0" <?= !$user['verified'] ? 'selected' : '' ?>>No</option>
                 </select>
@@ -163,26 +185,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
             </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
         </form>
     <?php else: ?>
         <p>User not found or an error occurred.</p>
     <?php endif; ?>
 </div>
 
-
-<div class="loading" id="loading">
-    <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.getElementById('editForm').addEventListener('submit', function() {
-        document.getElementById('loading').classList.add('show');
-    });
-</script>
 <?php require_once('../inc/footer.php') ?>
 </body>
 </html>

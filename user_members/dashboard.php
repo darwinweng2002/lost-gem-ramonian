@@ -102,6 +102,7 @@ $post_stmt->close();
     </style>
 </head>
 <body>
+<?php require_once('../inc/side_bar.php') ?>
     <main>
         <div class="container">
             <section class="section profile min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">

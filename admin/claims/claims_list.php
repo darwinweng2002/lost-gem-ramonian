@@ -51,37 +51,42 @@ if ($qry->num_rows > 0) {
     <title>Claims List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
+            color: #333;
         }
         h1 {
             text-align: center;
             margin: 20px 0;
-            color: #333;
+            color: #2c3e50;
+            font-size: 24px;
         }
         table {
             width: 90%;
-            margin: 0 auto;
+            margin: 20px auto;
             border-collapse: collapse;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         th, td {
-            padding: 12px;
+            padding: 12px 15px;
             text-align: left;
+            font-size: 14px;
         }
         th {
-            background-color: #f9f9f9;
-            color: black;
+            background-color: #2c3e50;
+            color: #ecf0f1;
         }
         tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
         tbody tr:hover {
-            background-color: #f1f1f1;
+            background-color: #e8e8e8;
         }
         .action-buttons {
             display: flex;
@@ -97,7 +102,7 @@ if ($qry->num_rows > 0) {
             transition: background-color 0.3s;
         }
         .action-buttons .view {
-            background-color: #007bff;
+            background-color: #3498db;
         }
         .action-buttons .approve {
             background-color: #28a745;
@@ -106,15 +111,17 @@ if ($qry->num_rows > 0) {
             background-color: #dc3545;
         }
         .action-buttons button:hover {
-            opacity: 0.8;
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 <?php require_once('../inc/topBarNav.php') ?>
 <?php require_once('../inc/navigation.php') ?> 
-    <h1>Claims List</h1>
-    <table border="0">
+<br>
+<br>
+    <h1 class="text-center mb-4">Claims List</h1>
+    <table>
         <thead>
             <tr>
                 <th>Claim ID</th>
@@ -149,7 +156,7 @@ if ($qry->num_rows > 0) {
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="10">No claims found.</td>
+                    <td colspan="9">No claims found.</td>
                 </tr>
             <?php endif; ?>
         </tbody>

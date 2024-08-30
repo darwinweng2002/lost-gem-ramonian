@@ -161,19 +161,9 @@ $stmt->close();
             transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #0056b3;
-        }
+        
 
-        .footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
+
     </style>
 </head>
 <body>
