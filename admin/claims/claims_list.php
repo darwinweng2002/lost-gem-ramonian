@@ -27,8 +27,6 @@ $qry = $conn->query("
         user_member m ON c.user_id = m.id
 ");
 
-
-
 // Debug output
 if (!$qry) {
     echo 'Error executing query: ' . $conn->error;
@@ -50,7 +48,8 @@ if ($qry->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claims List</title>
     <style>
-        body {
+
+body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -113,6 +112,21 @@ if ($qry->num_rows > 0) {
         .action-buttons button:hover {
             opacity: 0.9;
         }
+        .action-buttons a.view {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.action-buttons a.view:hover {
+    opacity: 0.9;
+}
+
     </style>
 </head>
 <body>
@@ -148,7 +162,8 @@ if ($qry->num_rows > 0) {
                         <td><?= htmlspecialchars($claim['verification_document']) ?></td>
                         <td><?= htmlspecialchars($claim['additional_info']) ?></td>
                         <td class="action-buttons">
-                            <button class="view">View</button>
+                            <!-- Updated View Button -->
+                            <a href="view_claim.php?claim_id=<?= $claim['claim_id'] ?>" class="view">View</a>
                             <button class="approve">Approve</button>
                             <button class="delete">Delete</button>
                         </td>
@@ -161,6 +176,7 @@ if ($qry->num_rows > 0) {
             <?php endif; ?>
         </tbody>
     </table>
+
     <?php require_once('../inc/footer.php') ?>
 </body>
 </html>
