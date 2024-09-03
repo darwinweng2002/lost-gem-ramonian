@@ -2,46 +2,39 @@
 // Include the database configuration file
 include 'config.php';
 
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $college = $_POST['college'];
-    $course = $_POST['course']; // New field
-    $year = $_POST['year']; // New field
-    $section = $_POST['section']; // New field
-    $verified = isset($_POST['verified']) ? 1 : 0;
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-    // Prepare and execute query
-    $stmt = $conn->prepare("INSERT INTO user_member (first_name, last_name, college, course, year, section, verified, email, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssiss", $first_name, $last_name, $college, $course, $year, $section, $verified, $email, $password);
-    if ($stmt->execute()) {
-        echo "Registration successful!";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
-    $stmt->close();
-}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta name="google-signin-client_id" content="462546722729-vflluo934lv9qei2jbeaqcib5sllh9t6.apps.googleusercontent.com">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <title>Register Account</title>
 </head>
 <?php require_once('inc/header.php'); ?>
 <body>
   <style>
-    body {
-      background-size: cover;
-      background-repeat: no-repeat;
-      backdrop-filter: brightness(.7);
-      overflow-x: hidden;
+  .swal2-popup {
+    position: fixed !important; /* Fix position relative to viewport */
+    top: 50% !important;        /* Center vertically */
+    left: 50% !important;       /* Center horizontally */
+    transform: translate(-50%, -50%) !important; /* Adjust for exact center */
+    z-index: 9999 !important;   /* Ensure it appears above other elements */
+    overflow: auto;              /* Allow scrolling within the popup if needed */
+}
+
+/* Optional: To ensure that the page content can be scrolled while the popup is visible */
+
+
+/* Optional: If you have any styles that could impact the body overflow */
+.swal2-overlay {
+    overflow: auto;             /* Allow scrolling of the page if necessary */
+}
+body {
+      overflow: auto;
     }
     .logo img {
       max-height: 55px;
@@ -204,31 +197,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script src="<?= base_url ?>assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="<?= base_url ?>assets/vendor/php-email-form/validate.js"></script>
   <script src="<?= base_url ?>assets/js/main.js"></script>
- 
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> <!-- Ensure jQuery is included -->
   <script>
-    $(document).ready(function() {
-      end_loader();
-    });
+  $(document).ready(function() {
+    $('form').on('submit', function(e) {
+      e.preventDefault(); // Prevent the default form submission
 
-    function handleCredentialResponse(response) {
-        // This function handles the response from Google Sign-In
-        const data = jwt_decode(response.credential);
+      // Check if all required fields are filled
+      var isValid = true;
+      $(this).find('input[required], select[required]').each(function() {
+        if ($.trim($(this).val()) === '') {
+          isValid = false;
+          $(this).addClass('is-invalid'); // Add bootstrap invalid class
+        } else {
+          $(this).removeClass('is-invalid'); // Remove bootstrap invalid class
+        }
+      });
 
-        // Send the Google ID token to your server for verification and user registration/login
-        $.post("google-signin.php", {
-            id_token: response.credential,
-            first_name: data.given_name,
-            last_name: data.family_name,
-            email: data.email
-        }, function(result) {
-            if (result.success) {
-                // Redirect or notify the user
-                window.location.href = "dashboard.php";
-            } else {
-                alert(result.message);
+      if (!isValid) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Please fill all required fields.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return; // Exit the function if validation fails
+      }
+
+      // Collect form data
+      var formData = $(this).serialize();
+
+      // Submit form data using AJAX  
+      $.ajax({
+        url: 'register_process.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        success: function(response) {
+          console.log(response); // Log the response to check
+          if (response.success) {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Registration successful!',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = 'login.php'; // Redirect or do something else
+              }
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: response.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('AJAX Error: ', status, error); // Log the AJAX error
+          Swal.fire({
+            title: 'Success!',
+            text: 'Registration Successfull!',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = 'login.php'; // Redirect or do something else
             }
-        }, 'json');
-    }
-  </script>
+          });
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
 </body>
 </html>

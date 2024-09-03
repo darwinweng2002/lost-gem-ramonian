@@ -103,7 +103,13 @@
   <li class="nav-item">
     <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/claims/claims_list.php">
       <i class="bi bi-people"></i>
-      <span>Pending Accounts</span>
+      <span>Claim Request</span>
+      <?php 
+      $message = $conn->query("SELECT * FROM `claims` where `status` = 0")->num_rows;
+      ?>
+      <?php if($message > 0): ?>
+        <span class="badge rounded-pill bg-danger text-light ms-4"><?= format_num($message) ?></span>
+      <?php endif; ?>
     </a>
   </li>
   <?php endif; ?>

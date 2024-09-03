@@ -63,10 +63,7 @@ $post_stmt->close();
     <style>
         /* Your existing CSS */
         body {
-            background-size: cover;
-            background-repeat: no-repeat;
-            backdrop-filter: brightness(.7);
-            overflow-x: hidden;
+            overflow: auto;
         }
         .logo img {
             max-height: 55px;
@@ -108,6 +105,22 @@ $post_stmt->close();
         .status-approved {
             color: green;
         }
+        .swal2-popup {
+    position: fixed !important; /* Fix position relative to viewport */
+    top: 50% !important;        /* Center vertically */
+    left: 50% !important;       /* Center horizontally */
+    transform: translate(-50%, -50%) !important; /* Adjust for exact center */
+    z-index: 9999 !important;   /* Ensure it appears above other elements */
+    overflow: auto;              /* Allow scrolling within the popup if needed */
+}
+
+/* Optional: To ensure that the page content can be scrolled while the popup is visible */
+
+
+/* Optional: If you have any styles that could impact the body overflow */
+.swal2-overlay {
+    overflow: auto;             /* Allow scrolling of the page if necessary */
+}
     </style>
 </head>
 <body>

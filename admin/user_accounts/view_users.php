@@ -25,6 +25,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <title>View Users</title>
     <style>
         body {
@@ -214,44 +215,59 @@ $result = $conn->query($sql);
         </div>
     </div>
 </section>
-
 <script>
-    function deleteUser(event, id) {
-        event.preventDefault(); // Prevent default form submission
-        if (confirm("Are you sure you want to delete this user?")) {
-            const button = event.currentTarget;
-            const spinner = button.querySelector('.spinner-border');
-            button.disabled = true; // Disable button to prevent multiple clicks
-            spinner.style.display = 'inline-block'; // Show loading spinner
+  function deleteUser(event, id) {
+    event.preventDefault(); // Prevent default form submission
 
-            // Simulate loading animation for 2 seconds
-            setTimeout(() => {
-                fetch('delete_user.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'id=' + id
-                })
-                .then(response => response.text())
-                .then(result => {
-                    spinner.style.display = 'none'; // Hide loading spinner
-                    button.disabled = false; // Re-enable button
-                    if (result.trim() === '1') {
-                        location.reload();
-                    } else {
-                        alert('An error occurred while deleting the user.');
-                    }
-                })
-                .catch(() => {
-                    spinner.style.display = 'none'; // Hide loading spinner on error
-                    button.disabled = false; // Re-enable button
-                    alert('An error occurred while deleting the user.');
-                });
-            }, 2000); // 2 seconds delay for loading animation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('delete_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'id=' + id
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log('Response from server:', result); // Log the response for debugging
+                if (result.trim() === '1') {
+                    Swal.fire(
+                        'Deleted!',
+                        'The user has been deleted.',
+                        'success'
+                    ).then(() => {
+                        location.reload(); // Reload the page to reflect changes
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while deleting the user.',
+                        'error'
+                    );
+                }
+            })
+            .catch(() => {
+                Swal.fire(
+                    'Error!',
+                    'An error occurred while deleting the user.',
+                    'error'
+                );
+            });
         }
-    }
+    });
+}
+
 </script>
+
 
 <?php
 $conn->close();
