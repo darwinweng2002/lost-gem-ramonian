@@ -45,7 +45,6 @@ if (isset($_GET['item_id']) && $_GET['item_id'] > 0) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $item_id = $_POST['item_id'];
-    $verification_document = $_FILES['verification_document']['name'];
     $additional_info = $_POST['additional_info'];
     $email = $_POST['email'];
     $course = $_POST['course'];
@@ -53,41 +52,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $section = $_POST['section'];
     $college = $_POST['college'];
 
-    // Handle file upload
-    if ($verification_document) {
+    $verification_documents = [];
+
+    // Handle multiple file uploads
+    if (isset($_FILES['verification_document']) && count($_FILES['verification_document']['name']) > 0) {
         $target_dir = "uploads/";
-        $target_file = $target_dir . basename($_FILES["verification_document"]["name"]);
-        if (!move_uploaded_file($_FILES["verification_document"]["tmp_name"], $target_file)) {
-            echo '<script>alert("File upload failed.");</script>';
-            exit;
+
+        for ($i = 0; $i < count($_FILES['verification_document']['name']); $i++) {
+            $fileName = $_FILES['verification_document']['name'][$i];
+            $target_file = $target_dir . basename($fileName);
+            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            $allowedTypes = ['jpg', 'png', 'jpeg', 'pdf'];
+
+            // Check file type and size
+            if (in_array($fileType, $allowedTypes) && $_FILES["verification_document"]["size"][$i] <= 5000000) {
+                // Attempt to upload the file
+                if (move_uploaded_file($_FILES["verification_document"]["tmp_name"][$i], $target_file)) {
+                    $verification_documents[] = $fileName;
+                } else {
+                    echo '<script>alert("File upload failed for ' . htmlspecialchars($fileName) . '");</script>';
+                }
+            }
         }
     }
 
-    // Check if user exists
-    $stmt = $conn->prepare("SELECT id FROM user_member WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows == 0) {
-        echo '<script>alert("Invalid user.");</script>';
-        exit;
-    }
-    $stmt->close();
+    // Convert array of file names to JSON for storage in database
+    $verification_documents_json = json_encode($verification_documents);
 
-    // Check if item exists
-    $stmt = $conn->prepare("SELECT id FROM item_list WHERE id = ?");
-    $stmt->bind_param("i", $item_id);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows == 0) {
-        echo '<script>alert("Invalid item.");</script>';
-        exit;
-    }
-    $stmt->close();
-
-    // Insert into claims table
+    // Database insertion
     $stmt = $conn->prepare("INSERT INTO claims (user_id, item_id, verification_document, additional_info, email, course, year, section, college) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("iisssssss", $user_id, $item_id, $verification_document, $additional_info, $email, $course, $year, $section, $college);
+    $stmt->bind_param("iisssssss", $user_id, $item_id, $verification_documents_json, $additional_info, $email, $course, $year, $section, $college);
 
     if ($stmt->execute()) {
         echo '<script>alert("Claim request submitted successfully."); location.replace("./dashboard.php")</script>';
@@ -160,17 +154,13 @@ $stmt->close();
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
-        
-
-
     </style>
 </head>
 <body>
     <?php require_once('../inc/topBarNav.php') ?>
     <div class="content">
-    <br>
-    <br>
+        <br>
+        <br>
         <form method="post" enctype="multipart/form-data">
             <input type="hidden" name="item_id" value="<?= htmlspecialchars($item['id'] ?? '') ?>">
             <h2><?= htmlspecialchars($item['title'] ?? 'Title not available') ?> | <?= htmlspecialchars($item['category'] ?? 'Category not available') ?></h2>
@@ -190,8 +180,9 @@ $stmt->close();
             <label for="section">Section:</label>
             <input type="text" name="section" id="section" value="<?= htmlspecialchars($section) ?>" readonly>
 
-            <label for="verification_document">Upload Verification Document:</label>
-            <input type="file" name="verification_document" id="verification_document" required>
+            <label for="verification_document">Upload Verification Documents:</label>
+<input type="file" name="verification_document[]" id="verification_document" multiple required>
+
 
             <label for="additional_info">Additional Information:</label>
             <textarea name="additional_info" id="additional_info"></textarea>

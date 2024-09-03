@@ -34,6 +34,7 @@ if (isset($_POST['delete_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <title>Activity Log - Claim History</title>
     <style>
         body {
@@ -111,6 +112,8 @@ if (isset($_POST['delete_id'])) {
             padding: 30px 0;
         }
     </style>
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
 <?php require_once('../inc/topBarNav.php') ?>
@@ -142,7 +145,7 @@ if (isset($_POST['delete_id'])) {
                             <td><?php echo htmlspecialchars($row['claimed_by']); ?></td>
                             <td><?php echo date("Y-m-d g:i A", strtotime($row['claimed_at'])); ?></td>
                             <td>
-                                <form method="post" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                <form method="post" class="delete-form">
                                     <input type="hidden" name="delete_id" value="<?php echo $row['id']; ?>">
                                     <button type="submit" class="btn btn-delete">Delete</button>
                                 </form>
@@ -160,6 +163,33 @@ if (isset($_POST['delete_id'])) {
     </div>
 </section>
 <?php require_once('../inc/footer.php') ?>
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.delete-form').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+                const formElement = event.target;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formElement.submit(); // Submit the form if confirmed
+                    }
+                });
+            });
+        });
+    });
+</script>
 </body>
 </html>
 

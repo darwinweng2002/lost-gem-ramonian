@@ -11,15 +11,25 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Destroy all sessions to log out the user
+// Destroy the session
+session_unset();
 session_destroy();
 
-// Display a message box to confirm logout and redirect to the register page
-echo "<script>
-    alert('You have successfully logged out.');
-    window.location.href = 'register.php';
-</script>";
+// Buffer output to avoid "headers already sent" warning
+ob_start();
+?>
 
-// Make sure no further code is executed
-exit();
+<script>
+    // Use JavaScript for the confirmation dialog
+    if (confirm('Are you sure you want to logout?')) {
+        alert('You have successfully logged out.');
+        window.location.href = 'register.php';
+    } else {
+        window.location.href = 'index.php'; // or wherever you want to redirect if canceled
+    }
+</script>
+
+<?php
+// End output buffering and flush the buffer
+ob_end_flush();
 ?>

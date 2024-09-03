@@ -282,7 +282,7 @@
             <br>
             <li><a href="http://localhost/lostgemramonian/user_members/dashboard.php">Profile</a></li>
             <li><a href="<?= base_url.'?page=settings' ?>">Settings</a></li>
-            <li><a href="<?= base_url.'?page=logout' ?>">Logout</a></li>
+            <li><a href="http://localhost/lostgemramonian/logout.php" class="btn btn-primary mx-2">Logout</a></li>
         </ul>
     </div>
 

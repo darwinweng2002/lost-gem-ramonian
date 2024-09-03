@@ -55,7 +55,13 @@ $post_stmt->close();
 <html lang="en">
 <head>
     <?php require_once('../inc/header.php'); ?>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
+        /* Your existing CSS */
         body {
             background-size: cover;
             background-repeat: no-repeat;
@@ -98,6 +104,9 @@ $post_stmt->close();
             font-weight: bold;
             text-align: center;
             margin-bottom: 20px;
+        }
+        .status-approved {
+            color: green;
         }
     </style>
 </head>
@@ -168,7 +177,9 @@ $post_stmt->close();
                                                     <tr>
                                                         <td><a href="item_details.php?id=<?= htmlspecialchars($claim['item_id']) ?>"><?= htmlspecialchars($claim['item_name']) ?></a></td>
                                                         <td><?= htmlspecialchars($claim['claim_date']) ?></td>
-                                                        <td><?= htmlspecialchars($claim['status']) ?></td>
+                                                        <td class="<?= $claim['status'] === 'approved' ? 'status-approved' : '' ?>">
+                                                            <?= htmlspecialchars($claim['status']) ?>
+                                                        </td>
                                                     </tr>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
@@ -200,7 +211,7 @@ $post_stmt->close();
                                     </table>
 
                                     <div class="text-center mt-4 d-flex justify-content-center">
-                                        <a href="http://localhost/lostgemramonian/logout.php" class="btn btn-primary mx-2">Logout</a>
+                                        <button id="logout-btn" class="btn btn-primary mx-2">Logout</button>
                                         <a href="http://localhost/lostgemramonian/" class="btn btn-secondary mx-2">Back</a>
                                     </div>
 
@@ -235,5 +246,26 @@ $post_stmt->close();
     <script src="<?= base_url ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?= base_url ?>assets/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="<?= base_url ?>assets/js/main.js"></script>
+    <!-- Include SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            Swal.fire({
+                title: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to logout URL
+                    window.location.href = 'http://localhost/lostgemramonian/logout.php';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

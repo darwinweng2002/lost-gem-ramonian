@@ -28,6 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<head>
+<meta name="google-signin-client_id" content="462546722729-vflluo934lv9qei2jbeaqcib5sllh9t6.apps.googleusercontent.com">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<title>Register Account</title>
+</head>
 <?php require_once('inc/header.php'); ?>
 <body>
   <style>
@@ -151,8 +157,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="text-center mt-3">
                     <p>Already have an account? <a href="http://localhost/lostgemramonian/login.php/">Login here</a></p>
                   </div>
+                  <div id="g_id_onload"
+         data-client_id="YGOCSPX-kVEygpsdOrU_3FQ8fHnfv86qUrRM"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="signin_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
+</div>
                 </div>
               </div>
+              <div class="col-12">
               <footer>
                 <div class="copyright">
                   &copy; Copyright <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
@@ -181,10 +204,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script src="<?= base_url ?>assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="<?= base_url ?>assets/vendor/php-email-form/validate.js"></script>
   <script src="<?= base_url ?>assets/js/main.js"></script>
+ 
   <script>
     $(document).ready(function() {
       end_loader();
     });
+
+    function handleCredentialResponse(response) {
+        // This function handles the response from Google Sign-In
+        const data = jwt_decode(response.credential);
+
+        // Send the Google ID token to your server for verification and user registration/login
+        $.post("google-signin.php", {
+            id_token: response.credential,
+            first_name: data.given_name,
+            last_name: data.family_name,
+            email: data.email
+        }, function(result) {
+            if (result.success) {
+                // Redirect or notify the user
+                window.location.href = "dashboard.php";
+            } else {
+                alert(result.message);
+            }
+        }, 'json');
+    }
   </script>
 </body>
 </html>

@@ -44,7 +44,6 @@
                     </ul>
                   </li>
                   <!-- End Level three -->
-
                   <li><a href="#" class="dropdown-item">level 2</a></li>
                   <li><a href="#" class="dropdown-item">level 2</a></li>
                 </ul>

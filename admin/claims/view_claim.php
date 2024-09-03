@@ -38,7 +38,7 @@ if (isset($_GET['claim_id'])) {
 
         <!DOCTYPE html>
         <html lang="en">
-        <?php require_once('../inc/header.php') ?>
+        <?php require_once('../inc/header.php'); ?>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,37 +92,60 @@ if (isset($_GET['claim_id'])) {
                     font-size: 20px;
                     color: #2c3e50;
                 }
+                .doc-viewer {
+                    margin-top: 20px;
+                }
+                .doc-viewer iframe {
+                    width: 100%;
+                    height: 500px;
+                    border: none;
+                }
             </style>
         </head>
         <body>
-        <?php require_once('../inc/topBarNav.php') ?>
-        <?php require_once('../inc/navigation.php') ?> 
+        <?php require_once('../inc/topBarNav.php'); ?>
+        <?php require_once('../inc/navigation.php'); ?>
             <div class="container">
                 <div class="claim-details">
                     <h2>Claim Details</h2>
-                    <p><strong>Item Title:</strong> <?= htmlspecialchars($claim['item_title']) ?></p>
-                    <p><strong>Category:</strong> <?= htmlspecialchars($claim['category_name']) ?></p>
-                    <p><strong>Founder Name:</strong> <?= htmlspecialchars($claim['fullname']) ?></p>
-                    <p><strong>Contact Number:</strong> <?= htmlspecialchars($claim['contact']) ?></p>
-                    <p><strong>Description:</strong> <?= htmlspecialchars($claim['description']) ?></p>
-                    <p><strong>Verification Document:</strong> <?= htmlspecialchars($claim['verification_document']) ?></p>
-                    <p><strong>Additional Info:</strong> <?= htmlspecialchars($claim['additional_info']) ?></p>
+                    <p><strong>Item Title:</strong> <?= htmlspecialchars($claim['item_title']); ?></p>
+                    <p><strong>Category:</strong> <?= htmlspecialchars($claim['category_name']); ?></p>
+                    <p><strong>Founder Name:</strong> <?= htmlspecialchars($claim['fullname']); ?></p>
+                    <p><strong>Contact Number:</strong> <?= htmlspecialchars($claim['contact']); ?></p>
+                    <p><strong>Description:</strong> <?= htmlspecialchars($claim['description']); ?></p>
+                    <p><strong>Verification Document:</strong></p>
+                    <?php
+                    if (!empty($claim['verification_document'])):
+                        $filePath = 'uploads/items/' . htmlspecialchars($claim['verification_document']);
+                        $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
+
+                        if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                            <img src="<?= $filePath; ?>" alt="Verification Document">
+                        <?php elseif ($fileExt == 'pdf'): ?>
+                            <iframe src="<?= $filePath; ?>" title="Verification Document"></iframe>
+                        <?php else: ?>
+                            <a href="<?= $filePath; ?>" download>Download Document</a>
+                        <?php endif;
+                    else: ?>
+                        <p>No document available.</p>
+                    <?php endif; ?>
+                    <p><strong>Additional Info:</strong> <?= htmlspecialchars($claim['additional_info']); ?></p>
                     <?php if (!empty($claim['image_path'])): ?>
                         <div class="lf-image">
-                            <img src="<?= validate_image($claim['image_path']) ?>" alt="<?= htmlspecialchars($claim['item_title']) ?>">
+                            <img src="<?= validate_image($claim['image_path']); ?>" alt="<?= htmlspecialchars($claim['item_title']); ?>">
                         </div>
                     <?php endif; ?>
                 </div>
 
                 <div class="claimer-details">
                     <h3>Claimer Details</h3>
-                    <p><strong>Email:</strong> <?= htmlspecialchars($claim['user_email']) ?></p>
-                    <p><strong>Course:</strong> <?= htmlspecialchars($claim['user_course']) ?></p>
-                    <p><strong>Year:</strong> <?= htmlspecialchars($claim['user_year']) ?></p>
-                    <p><strong>Section:</strong> <?= htmlspecialchars($claim['user_section']) ?></p>
+                    <p><strong>Email:</strong> <?= htmlspecialchars($claim['user_email']); ?></p>
+                    <p><strong>Course:</strong> <?= htmlspecialchars($claim['user_course']); ?></p>
+                    <p><strong>Year:</strong> <?= htmlspecialchars($claim['user_year']); ?></p>
+                    <p><strong>Section:</strong> <?= htmlspecialchars($claim['user_section']); ?></p>
                 </div>
             </div>
-            <?php require_once('../inc/footer.php') ?>
+            <?php require_once('../inc/footer.php'); ?>
         </body>
         </html>
 

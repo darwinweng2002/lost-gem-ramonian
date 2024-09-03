@@ -1377,3 +1377,15 @@ div#site-header .siteTitle {
     font-size: 2rem; /* Reduce font size for smaller screens */
   }
 }
+
+#data {  
+  display: none;  
+}  
+
+#signing {  
+  position: absolute;  
+  top: 500;  
+  left: 100;  
+  margin-top: 50px;  
+  margin-left: 50px;  
+}

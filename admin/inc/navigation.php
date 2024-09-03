@@ -80,12 +80,24 @@
     <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/user_accounts/view_users.php">
       <i class="bi bi-people"></i>
       <span>User Accounts</span>
+      <?php 
+      $message = $conn->query("SELECT * FROM `user_member` where `status` = 0")->num_rows;
+      ?>
+      <?php if($message > 0): ?>
+        <span class="badge rounded-pill bg-danger text-light ms-4"><?= format_num($message) ?></span>
+      <?php endif; ?>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link <?= $page != 'user/list' ? 'collapsed' : '' ?> nav-users" href="http://localhost/lostgemramonian/admin/activities/activity_log.php/">
       <i class="bi bi-people"></i>
       <span>Activity Logs</span>
+      <?php 
+      $message = $conn->query("SELECT * FROM `claim_history` where `status` = 0")->num_rows;
+      ?>
+      <?php if($message > 0): ?>
+        <span class="badge rounded-pill bg-danger text-light ms-4"><?= format_num($message) ?></span>
+      <?php endif; ?>
     </a>
   </li>
   <li class="nav-item">

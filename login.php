@@ -1,8 +1,12 @@
 <?php
 // Start the session at the very beginning
 
+
 // Include the database configuration file
 include 'config.php'; // Adjust the path if necessary
+
+// Variable to hold the error message
+$error_message = '';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -30,20 +34,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: http://localhost/lostgemramonian/");
                 exit();
             } else {
-                echo "Invalid email or password.";
+                $error_message = 'Invalid email or password.';
             }
         } else {
-            echo "No user found with that email.";
+            $error_message = 'No user found with that email.';
         }
     } else {
-        echo "Error preparing statement: " . $conn->error;
+        $error_message = 'Error preparing statement: ' . $conn->error;
     }
- 
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta name="google-signin-client_id" content="462546722729-vflluo934lv9qei2jbeaqcib5sllh9t6.apps.googleusercontent.com">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 <?php require_once('inc/header.php'); ?>
 <body>
   <style>
@@ -99,28 +109,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   </form>
                   <br>
                   <button class="btn btn-primary w-100"><a style="color: #fff;" href="http://localhost/lostgemramonian/admin/login.php">Login as Admin</a></button>
+                  <br>
+                  <br>
+                  <div id="g_id_onload"
+                    data-client_id="YGOCSPX-kVEygpsdOrU_3FQ8fHnfv86qUrRM"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="handleCredentialResponse"
+                    data-auto_prompt="false">
+                  </div>
+                  <div class="g_id_signin"
+                      data-type="standard"
+                      data-shape="rectangular"
+                      data-theme="outline"
+                      data-text="signin_with"
+                      data-size="large"
+                      data-logo_alignment="left">
+                  </div>
                 </div>
               </div>
-            <footer>
-              <div class="container text-center py-4">
-                <!-- Copyright Section -->
-                <div class="copyright mb-2">
-                  &copy; <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
+              <footer>
+                <div class="container text-center py-4">
+                  <!-- Copyright Section -->
+                  <div class="copyright mb-2">
+                    &copy; <strong><span>Ramonian LostGems</span></strong>. All Rights Reserved
+                  </div>
+                  <!-- Credits Section -->
+                  <div class="credits">
+                    <p>
+                      <a href="http://localhost/lostgemramonian/register.php">prmsuramonianlostgems.com</a>
+                    </p>
+                  </div>
+                  <!-- Logo Section -->
+                  <div class="logo mb-2">
+                    <a href="<?= base_url ?>">
+                      <img style="height: 55px; width: 55px;" src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo">
+                    </a>
+                  </div>
                 </div>
-                <!-- Credits Section -->
-                <div class="credits">
-                  <p>
-                    <a href="http://localhost/lostgemramonian/register.php">prmsuramonianlostgems.com</a>
-                  </p>
-                </div>
-                <!-- Logo Section -->
-                <div class="logo mb-2">
-                  <a href="<?= base_url ?>">
-                    <img style="height: 55px; width: 55px;" src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo">
-                  </a>
-                </div>
-              </div>
-            </footer>
+              </footer>
 
             </div>
           </div>
@@ -142,7 +169,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <script>
     $(document).ready(function() {
       end_loader();
+      // Check if there's an error message
+      <?php if ($error_message): ?>
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '<?php echo $error_message; ?>',
+          confirmButtonText: 'OK'
+        });
+      <?php endif; ?>
     });
+    function handleCredentialResponse(response) {
+        // This function handles the response from Google Sign-In
+        const data = jwt_decode(response.credential);
+
+        // Send the Google ID token to your server for verification and user registration/login
+        $.post("google-signin.php", {
+            id_token: response.credential,
+            first_name: data.given_name,
+            last_name: data.family_name,
+            email: data.email
+        }, function(result) {
+            if (result.success) {
+                // Redirect or notify the user
+                window.location.href = "dashboard.php";
+            } else {
+                alert(result.message);
+            }
+        }, 'json');
+    }
   </script>
 </body>
 </html>
