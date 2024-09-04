@@ -8,7 +8,6 @@ if (isset($_GET['claim_id'])) {
     $qry = $conn->query("
         SELECT 
             c.id AS claim_id, 
-            c.verification_document, 
             c.additional_info, 
             i.title AS item_title, 
             cl.name AS category_name, 
@@ -113,22 +112,6 @@ if (isset($_GET['claim_id'])) {
                     <p><strong>Founder Name:</strong> <?= htmlspecialchars($claim['fullname']); ?></p>
                     <p><strong>Contact Number:</strong> <?= htmlspecialchars($claim['contact']); ?></p>
                     <p><strong>Description:</strong> <?= htmlspecialchars($claim['description']); ?></p>
-                    <p><strong>Verification Document:</strong></p>
-                    <?php
-                    if (!empty($claim['verification_document'])):
-                        $filePath = 'uploads/items/' . htmlspecialchars($claim['verification_document']);
-                        $fileExt = pathinfo($filePath, PATHINFO_EXTENSION);
-
-                        if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                            <img src="<?= $filePath; ?>" alt="Verification Document">
-                        <?php elseif ($fileExt == 'pdf'): ?>
-                            <iframe src="<?= $filePath; ?>" title="Verification Document"></iframe>
-                        <?php else: ?>
-                            <a href="<?= $filePath; ?>" download>Download Document</a>
-                        <?php endif;
-                    else: ?>
-                        <p>No document available.</p>
-                    <?php endif; ?>
                     <p><strong>Additional Info:</strong> <?= htmlspecialchars($claim['additional_info']); ?></p>
                     <?php if (!empty($claim['image_path'])): ?>
                         <div class="lf-image">

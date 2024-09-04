@@ -52,36 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $section = $_POST['section'];
     $college = $_POST['college'];
 
-    $verification_documents = [];
-
-    // Handle multiple file uploads
-    if (isset($_FILES['verification_document']) && count($_FILES['verification_document']['name']) > 0) {
-        $target_dir = "uploads/";
-
-        for ($i = 0; $i < count($_FILES['verification_document']['name']); $i++) {
-            $fileName = $_FILES['verification_document']['name'][$i];
-            $target_file = $target_dir . basename($fileName);
-            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-            $allowedTypes = ['jpg', 'png', 'jpeg', 'pdf'];
-
-            // Check file type and size
-            if (in_array($fileType, $allowedTypes) && $_FILES["verification_document"]["size"][$i] <= 5000000) {
-                // Attempt to upload the file
-                if (move_uploaded_file($_FILES["verification_document"]["tmp_name"][$i], $target_file)) {
-                    $verification_documents[] = $fileName;
-                } else {
-                    echo '<script>alert("File upload failed for ' . htmlspecialchars($fileName) . '");</script>';
-                }
-            }
-        }
-    }
-
-    // Convert array of file names to JSON for storage in database
-    $verification_documents_json = json_encode($verification_documents);
-
     // Database insertion
-    $stmt = $conn->prepare("INSERT INTO claims (user_id, item_id, verification_document, additional_info, email, course, year, section, college) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("iisssssss", $user_id, $item_id, $verification_documents_json, $additional_info, $email, $course, $year, $section, $college);
+    $stmt = $conn->prepare("INSERT INTO claims (user_id, item_id, additional_info, email, course, year, section, college) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iissssss", $user_id, $item_id, $additional_info, $email, $course, $year, $section, $college);
 
     if ($stmt->execute()) {
         echo '<script>alert("Claim request submitted successfully."); location.replace("./dashboard.php")</script>';
@@ -136,7 +109,7 @@ $stmt->close();
             margin: 10px 0 5px;
         }
 
-        input[type="text"], input[type="file"], textarea {
+        input[type="text"], textarea {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -161,7 +134,7 @@ $stmt->close();
     <div class="content">
         <br>
         <br>
-        <form method="post" enctype="multipart/form-data">
+        <form method="post">
             <input type="hidden" name="item_id" value="<?= htmlspecialchars($item['id'] ?? '') ?>">
             <h2><?= htmlspecialchars($item['title'] ?? 'Title not available') ?> | <?= htmlspecialchars($item['category'] ?? 'Category not available') ?></h2>
 
@@ -179,10 +152,6 @@ $stmt->close();
 
             <label for="section">Section:</label>
             <input type="text" name="section" id="section" value="<?= htmlspecialchars($section) ?>" readonly>
-
-            <label for="verification_document">Upload Verification Documents:</label>
-<input type="file" name="verification_document[]" id="verification_document" multiple required>
-
 
             <label for="additional_info">Additional Information:</label>
             <textarea name="additional_info" id="additional_info"></textarea>

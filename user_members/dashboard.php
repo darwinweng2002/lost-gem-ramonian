@@ -139,10 +139,18 @@ $post_stmt->close();
                             </div>
                             <div class="card mb-3">
                                 <div class="card-body">
-                                    <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">User Dashboard</h5>
-                                        <p class="text-center small">Welcome, <?= htmlspecialchars($first_name . ' ' . $last_name) ?></p>
-                                    </div>
+                                <div class="pt-4 pb-2 text-center">
+    <h5 class="card-title text-center pb-0 fs-4">User Dashboard</h5>
+    <div class="d-flex justify-content-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="10" r="3"/>
+            <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
+        </svg>
+    </div>
+    <p class="text-center small">Welcome, <?= htmlspecialchars($first_name . ' ' . $last_name) ?></p>
+</div>
+
 
                                     <div class="row">
                                         <div class="col-12">
@@ -188,12 +196,15 @@ $post_stmt->close();
                                             <?php else: ?>
                                                 <?php foreach ($claims as $claim): ?>
                                                     <tr>
-                                                        <td><a href="item_details.php?id=<?= htmlspecialchars($claim['item_id']) ?>"><?= htmlspecialchars($claim['item_name']) ?></a></td>
-                                                        <td><?= htmlspecialchars($claim['claim_date']) ?></td>
-                                                        <td class="<?= $claim['status'] === 'approved' ? 'status-approved' : '' ?>">
-                                                            <?= htmlspecialchars($claim['status']) ?>
-                                                        </td>
-                                                    </tr>
+                                                    <td><a href="<?= base_url ?>?page=items/view&id=<?= htmlspecialchars($claim['item_id']) ?>"><?= htmlspecialchars($claim['item_name']) ?></a></td>
+
+
+                                                    <td><?= htmlspecialchars($claim['claim_date']) ?></td>
+                                                    <td class="<?= $claim['status'] === 'approved' ? 'status-approved' : '' ?>">
+                                                        <?= htmlspecialchars($claim['status']) ?>
+                                                    </td>
+                                                </tr>
+
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </tbody>

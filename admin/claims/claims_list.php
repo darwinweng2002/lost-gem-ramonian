@@ -37,7 +37,6 @@ $qry = $conn->query("
         c.id AS claim_id, 
         c.user_id, 
         c.item_id, 
-        c.verification_document, 
         c.additional_info,
         i.title AS item_title, 
         m.email AS user_email,
@@ -243,7 +242,6 @@ if ($qry->num_rows > 0) {
                 <th>User Course</th>
                 <th>User Year</th>
                 <th>User Section</th>
-                <th>Verification Document</th>
                 <th>Additional Info</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -259,7 +257,6 @@ if ($qry->num_rows > 0) {
                         <td><?= htmlspecialchars($claim['user_course']) ?></td>
                         <td><?= htmlspecialchars($claim['user_year']) ?></td>
                         <td><?= htmlspecialchars($claim['user_section']) ?></td>
-                        <td><?= htmlspecialchars($claim['verification_document']) ?></td>
                         <td><?= htmlspecialchars($claim['additional_info']) ?></td>
                         <td><?= htmlspecialchars($claim['claim_status']) ?></td>
                         <td class="action-buttons">
